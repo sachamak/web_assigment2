@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const Post = require("../controllers/post_contoller");
+const Post = require("../controllers/posts_contoller");
 
 router.get("/", (req, res) => {
     if (req.query.owner) {

@@ -7,7 +7,7 @@
     "dev": "nodemon index.js",
     "test": "jest --detectOpenHandles --forceExit --coverage "
   },
-  "author": "Nadav Ben Yehonatan",
+  "author": "Nadav Ben Yehonatan Chamak Sacha",
   "license": "ISC",
   "description": "",
   "dependencies": {

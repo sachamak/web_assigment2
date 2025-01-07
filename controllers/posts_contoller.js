@@ -1,5 +1,5 @@
 
-Post = require("../models/post_model.js");
+Post = require("../models/posts_model.js");
 
 const getAllPosts = async (req, res) => {
     try {
