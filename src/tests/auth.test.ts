@@ -45,6 +45,15 @@ describe("Auth Tests", () => {
         expect(response.body.accessToken).toBeDefined();
         expect(response.body.refreshToken).toBeDefined();
       });
+      test("Auth test login wrong email", async () => {
+        const response = await request(app).post(baseUrl + "/login").send({
+          email: "wrong email",
+          password: testUser.password
+        });
+        expect(response.statusCode).toBe(404);
+        expect(response.text).toBe("User or password incorrect");
+      });
+
       test("Auth test login wrong password", async () => {
         const response = await request(app).post(baseUrl + "/login").send({
           email: testUser.email,
@@ -53,6 +62,7 @@ describe("Auth Tests", () => {
         expect(response.statusCode).not.toBe(200);
         expect(response.text).toBe("User or password incorrect");
       });
+     
       test("Auth test me", async () => {
         const response = await request(app).post("/posts").send(
             {
@@ -91,9 +101,32 @@ describe("Auth Tests", () => {
         testUser.accessToken = response.body.accessToken;
         testUser.refreshToken = response.body.refreshToken;
       });
+      test("No Refresh Token", async () => {
+        const response = await request(app).post(baseUrl + "/refresh").send();
+        expect(response.statusCode).toBe(400);
+        expect(response.text).toBe("refreshToken is required");
+      });
+   
     
+      test("logout without refresh token", async () => {
+        const response = await request(app).post(baseUrl + "/logout").send({});
+        expect(response.statusCode).toBe(400);
+        expect(response.text).toBe("refreshToken is required");
+      });
 
-      test("Logout - invalid refresh token", async () => {
+      test("logout with invalid refresh token", async () => {
+        const response = await request(app).post(baseUrl + "/logout").send({refreshToken: "invalid"});
+        expect(response.statusCode).toBe(401);
+        expect(response.text).toBe("Unauthorized");
+      });
+      
+      test("Refresh token invalid token", async () => {
+        const response = await request(app).post(baseUrl + "/refresh").send({refreshToken: "invalid"});
+        expect(response.statusCode).not.toBe(401);
+        expect(response.text).toBe("Unauthorized");
+      });
+
+      test("invalid refresh token", async () => {
         const response = await request(app).post(baseUrl + "/logout").send({refreshToken: testUser.refreshToken});
         expect(response.statusCode).toBe(200);
         const response2 = await request(app).post(baseUrl + "/refresh").send({refreshToken: testUser.refreshToken});
