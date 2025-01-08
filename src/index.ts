@@ -1,4 +1,5 @@
 import initApp from "./server";
+
 const port = process.env.PORT;
 
 initApp().then((app) => {
