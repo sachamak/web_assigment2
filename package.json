@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "tsc && jest --detectOpenHandles --forceExit",
-    "testAuth": "tsc && jest --detectOpenHandles --forceExit auth.test.ts",
+    "testAuth": "tsc && jest --detectOpenHandles --forceExit --coverage auth.test.ts",
     "start": "tsc && node dist/index.js",
     "dev": "nodemon ./src/index.ts",
     "lint": "eslint . --ext .ts",
