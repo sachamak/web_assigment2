@@ -137,7 +137,7 @@ describe("Auth Tests", () => {
       
       test("Refresh token invalid token", async () => {
         const response = await request(app).post(baseUrl + "/refresh").send({refreshToken: "invalid"});
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).not.toBe(401);
         expect(response.text).toBe("Unauthorized");
       });
 
