@@ -120,4 +120,11 @@ describe("Post test suite", () => {
     console.log(response.body);
     expect(response.status).not.toBe(200);
   });
+
+  test("Test Delete post by id fail", async () => {
+    const response = await request(app)
+      .delete("/posts/" + 1)
+      .set({ authorization: "JWT " + testUser.accessToken });
+    expect(response.status).not.toBe(200);
+  });
 });
