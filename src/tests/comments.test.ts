@@ -127,4 +127,11 @@ describe("Comment test suite", () => {
     console.log(response.body);
     expect(response.status).not.toBe(200);
   });
+
+  test("Test Delete Comment by id fail", async () => {
+    const response = await request(app)
+      .delete("/posts/" + commentId + 1)
+      .set({ authorization: "JWT " + testUser.accessToken });
+    expect(response.status).not.toBe(200);
+  });
 });

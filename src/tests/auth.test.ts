@@ -129,17 +129,21 @@ describe("Auth Tests", () => {
     expect(response.text).toBe("refreshToken is required");
   });
 
-      test("logout with invalid refresh token", async () => {
-        const response = await request(app).post(baseUrl + "/logout").send({refreshToken: "invalid"});
-        expect(response.statusCode).toBe(401);
-        expect(response.text).toBe("Unauthorized");
-      });
-      
-      test("Refresh token invalid token", async () => {
-        const response = await request(app).post(baseUrl + "/refresh").send({refreshToken: "invalid"});
-        expect(response.statusCode).toBe(401);
-        expect(response.text).toBe("Unauthorized");
-      });
+  test("logout with invalid refresh token", async () => {
+    const response = await request(app)
+      .post(baseUrl + "/logout")
+      .send({ refreshToken: "invalid" });
+    expect(response.statusCode).toBe(401);
+    expect(response.text).toBe("Unauthorized");
+  });
+
+  test("Refresh token invalid token", async () => {
+    const response = await request(app)
+      .post(baseUrl + "/refresh")
+      .send({ refreshToken: "invalid" });
+    expect(response.statusCode).toBe(401);
+    expect(response.text).toBe("Unauthorized");
+  });
 
   test("invalid refresh token", async () => {
     const response = await request(app)
