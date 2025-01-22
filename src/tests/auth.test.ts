@@ -151,6 +151,7 @@ describe("Auth Tests", () => {
     expect(response.text).toBe("refreshToken is required");
   });
 
+
   test("Auth test logout wrong token", async () => {
     const tokenSecret = process.env.TOKEN_SECRET;
     delete process.env.TOKEN_SECRET;
