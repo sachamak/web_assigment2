@@ -93,6 +93,12 @@ describe("Comment test suite", () => {
     expect(response.status).not.toBe(200);
   });
 
+  test("Test get comment by id fail", async () => {
+    const response = await request(app).get("/comments/" + "fff");
+    console.log(response.body);
+    expect(response.status).not.toBe(200);
+  });
+
   test("Test Update comment by id", async () => {
     const response = await request(app)
       .put("/comments/" + commentId)
@@ -119,6 +125,13 @@ describe("Comment test suite", () => {
       .put("/comments/" + commentId + 1)
       .send(testCommentUpdate);
     console.log(response.body);
+    expect(response.status).not.toBe(200);
+  });
+
+  test("Test Delete Comment by id fail", async () => {
+    const response = await request(app)
+      .delete("/posts/" + commentId + 1)
+      .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.status).not.toBe(200);
   });
 });

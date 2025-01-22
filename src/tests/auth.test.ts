@@ -175,6 +175,7 @@ describe("Auth Tests", () => {
         expect(response.text).toBe("Unauthorized");
       });
 
+
   test("invalid refresh token", async () => {
     const response = await request(app)
       .post(baseUrl + "/logout")

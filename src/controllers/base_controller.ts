@@ -25,11 +25,11 @@ class BaseController<T> {
   async getById(req: Request, res: Response) {
     const id = req.params.id;
     try {
-      const post = await this.model.findById(id);
-      if (post === null) {
-        res.status(404).send("Post not found");
+      const Item = await this.model.findById(id);
+      if (Item === null) {
+        res.status(404).send("Item not found");
       } else {
-        res.status(200).send(post);
+        res.status(200).send(Item);
       }
     } catch (err) {
       res.status(400).send(err);
@@ -40,22 +40,22 @@ class BaseController<T> {
     const idfilter = req.params.id;
     const updateData = req.body;
     if (!idfilter) {
-      res.status(400).send({ error: "Post ID is required" });
+      res.status(400).send({ error: "Item ID is required" });
     }
     if (!updateData) {
       res.status(400).send({ error: "No Data to Update" });
     }
     try {
-      const updatedPost = await this.model.findByIdAndUpdate(
+      const updatedItem = await this.model.findByIdAndUpdate(
         idfilter,
         updateData,
         { new: true, runValidators: true }
       );
 
-      if (!updatedPost) {
-        res.status(404).send({ error: "Post Not Found or Failed to Update" });
+      if (!updatedItem) {
+        res.status(404).send({ error: "Item Not Found or Failed to Update" });
       }
-      res.status(200).send(updatedPost);
+      res.status(200).send(updatedItem);
     } catch (err) {
       res.status(500).send(err);
     }
@@ -66,10 +66,10 @@ class BaseController<T> {
     try {
       const item = await this.model.findById(itemId);
       if (!item) {
-        res.status(404).send({ error: "Post not found" });
+        res.status(404).send({ error: "Item not found" });
       }
       await this.model.findByIdAndDelete(itemId);
-      res.status(200).send({ error: "Post deleted successfully" });
+      res.status(200).send({ error: "Item deleted successfully" });
     } catch (error) {
       res.status(500).send(error);
     }
