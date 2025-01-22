@@ -76,11 +76,11 @@ describe("Auth Tests", () => {
     const tokenSecret = process.env.TOKEN_SECRET;
     delete process.env.TOKEN_SECRET;
     const response = await request(app)
-    .post(baseUrl + "/login")
-    .send(testUser);
-  expect(response.statusCode).toBe(500);
-  expect(response.text).toBe("server error");
-  process.env.TOKEN_SECRET = tokenSecret;
+      .post(baseUrl + "/login")
+      .send(testUser);
+    expect(response.statusCode).toBe(500);
+    expect(response.text).toBe("server error");
+    process.env.TOKEN_SECRET = tokenSecret;
   });
 
   test("Auth test me", async () => {
@@ -108,11 +108,11 @@ describe("Auth Tests", () => {
     const tokenSecret = process.env.TOKEN_SECRET;
     delete process.env.TOKEN_SECRET;
     const response = await request(app)
-    .post(baseUrl + "/refresh")
-    .send({ refreshToken: testUser.refreshToken });
-  expect(response.statusCode).toBe(500);
-  expect(response.text).toBe("server error");
-  process.env.TOKEN_SECRET = tokenSecret;
+      .post(baseUrl + "/refresh")
+      .send({ refreshToken: testUser.refreshToken });
+    expect(response.statusCode).toBe(500);
+    expect(response.text).toBe("server error");
+    process.env.TOKEN_SECRET = tokenSecret;
   });
 
   test("Refresh Token", async () => {
@@ -151,30 +151,32 @@ describe("Auth Tests", () => {
     expect(response.text).toBe("refreshToken is required");
   });
 
-
   test("Auth test logout wrong token", async () => {
     const tokenSecret = process.env.TOKEN_SECRET;
     delete process.env.TOKEN_SECRET;
     const response = await request(app)
-    .post(baseUrl + "/logout")
-    .send({ refreshToken: testUser.refreshToken });
-  expect(response.statusCode).toBe(500);
-  expect(response.text).toBe("server error");
-  process.env.TOKEN_SECRET = tokenSecret;
+      .post(baseUrl + "/logout")
+      .send({ refreshToken: testUser.refreshToken });
+    expect(response.statusCode).toBe(500);
+    expect(response.text).toBe("server error");
+    process.env.TOKEN_SECRET = tokenSecret;
   });
- 
 
-      test("logout with invalid refresh token", async () => {
-        const response = await request(app).post(baseUrl + "/logout").send({refreshToken: "invalid"});
-        expect(response.statusCode).toBe(401);
-        expect(response.text).toBe("Unauthorized");
-      });
-      
-      test("Refresh token invalid token", async () => {
-        const response = await request(app).post(baseUrl + "/refresh").send({refreshToken: "invalid"});
-        expect(response.statusCode).toBe(401);
-        expect(response.text).toBe("Unauthorized");
-      });
+  test("logout with invalid refresh token", async () => {
+    const response = await request(app)
+      .post(baseUrl + "/logout")
+      .send({ refreshToken: "invalid" });
+    expect(response.statusCode).toBe(401);
+    expect(response.text).toBe("Unauthorized");
+  });
+
+  test("Refresh token invalid token", async () => {
+    const response = await request(app)
+      .post(baseUrl + "/refresh")
+      .send({ refreshToken: "invalid" });
+    expect(response.statusCode).toBe(401);
+    expect(response.text).toBe("Unauthorized");
+  });
   test("invalid refresh token", async () => {
     const response = await request(app)
       .post(baseUrl + "/logout")
@@ -243,19 +245,71 @@ describe("Auth Tests", () => {
     expect(response4.statusCode).toBe(201);
   });
 
-  test("wrong test post fall middleware", async () => { 
+  test("wrong test post fall middleware", async () => {
     const tokenSecret = process.env.TOKEN_SECRET;
     delete process.env.TOKEN_SECRET;
     const response4 = await request(app)
-    .post("/posts")
-    .set({ authorization: "JWT " + testUser.accessToken })
-    .send({
-      title: "test title",
-      content: "test content",
-      owner: testUser._id,
-    });
-  expect(response4.statusCode).toBe(500);
-  process.env.TOKEN_SECRET = tokenSecret;
+      .post("/posts")
+      .set({ authorization: "JWT " + testUser.accessToken })
+      .send({
+        title: "test title",
+        content: "test content",
+        owner: testUser._id,
+      });
+    expect(response4.statusCode).toBe(500);
+    process.env.TOKEN_SECRET = tokenSecret;
+  });
 
+  test("Get user by ID", async () => {
+    const newUser = await userModel.create({
+      email: "test@test.com",
+      password: "123456",
+    });
+    const response = await request(app).get(baseUrl + "/" + newUser._id);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty("email", "test@test.com");
+  });
+
+  test("Get non-existent user by ID", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId();
+    const response = await request(app).get(baseUrl + "/" + nonExistentId);
+    expect(response.statusCode).toBe(404);
+  });
+
+  test("Update user", async () => {
+    const newUser = await userModel.create({
+      email: "email@test.com",
+      password: "123456",
+    });
+    const response = await request(app)
+      .put(baseUrl + "/" + newUser._id)
+      .send({ email: "updated@test.com" });
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty("email", "updated@test.com");
+  });
+
+  test("Update user with invalid data", async () => {
+    const newUser = await userModel.create({
+      email: "email@test.com",
+      password: "123456",
+    });
+    const response = await request(app)
+      .put(baseUrl + newUser._id)
+      .send({ email: "invalid-email" });
+    expect(response.statusCode).toBe(404);
+  });
+
+  test("Delete user", async () => {
+    const newUser = await userModel.create({
+      email: "email2@test.com",
+      password: "123456",
+    });
+    const response = await request(app).delete(baseUrl + "/" + newUser._id);
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("delete user fail", async () => {
+    const response = await request(app).delete(baseUrl + "/123");
+    expect(response.statusCode).not.toBe(200);
   });
 });
