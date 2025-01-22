@@ -151,6 +151,7 @@ describe("Auth Tests", () => {
     expect(response.text).toBe("refreshToken is required");
   });
 
+
   test("Auth test logout wrong token", async () => {
     const tokenSecret = process.env.TOKEN_SECRET;
     delete process.env.TOKEN_SECRET;
@@ -174,8 +175,6 @@ describe("Auth Tests", () => {
         expect(response.statusCode).toBe(401);
         expect(response.text).toBe("Unauthorized");
       });
-
-
   test("invalid refresh token", async () => {
     const response = await request(app)
       .post(baseUrl + "/logout")
