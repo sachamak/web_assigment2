@@ -72,6 +72,17 @@ describe("Auth Tests", () => {
     expect(response.text).toBe("User or password incorrect");
   });
 
+  test("Auth test login wrong token", async () => {
+    const tokenSecret = process.env.TOKEN_SECRET;
+    delete process.env.TOKEN_SECRET;
+    const response = await request(app)
+    .post(baseUrl + "/login")
+    .send(testUser);
+  expect(response.statusCode).toBe(500);
+  expect(response.text).toBe("server error");
+  process.env.TOKEN_SECRET = tokenSecret;
+  });
+
   test("Auth test me", async () => {
     const response = await request(app).post("/posts").send({
       title: "test title",
@@ -91,6 +102,17 @@ describe("Auth Tests", () => {
     expect(response2.body.title).toBe("test title");
     expect(response2.body.content).toBe("test content");
     expect(response2.body.owner).toBe(testUser._id);
+  });
+
+  test("Auth test refresh wrong token", async () => {
+    const tokenSecret = process.env.TOKEN_SECRET;
+    delete process.env.TOKEN_SECRET;
+    const response = await request(app)
+    .post(baseUrl + "/refresh")
+    .send({ refreshToken: testUser.refreshToken });
+  expect(response.statusCode).toBe(500);
+  expect(response.text).toBe("server error");
+  process.env.TOKEN_SECRET = tokenSecret;
   });
 
   test("Refresh Token", async () => {
@@ -128,6 +150,18 @@ describe("Auth Tests", () => {
     expect(response.statusCode).toBe(400);
     expect(response.text).toBe("refreshToken is required");
   });
+
+  test("Auth test logout wrong token", async () => {
+    const tokenSecret = process.env.TOKEN_SECRET;
+    delete process.env.TOKEN_SECRET;
+    const response = await request(app)
+    .post(baseUrl + "/logout")
+    .send({ refreshToken: testUser.refreshToken });
+  expect(response.statusCode).toBe(500);
+  expect(response.text).toBe("server error");
+  process.env.TOKEN_SECRET = tokenSecret;
+  });
+ 
 
       test("logout with invalid refresh token", async () => {
         const response = await request(app).post(baseUrl + "/logout").send({refreshToken: "invalid"});
@@ -207,5 +241,21 @@ describe("Auth Tests", () => {
         owner: testUser._id,
       });
     expect(response4.statusCode).toBe(201);
+  });
+
+  test("wrong test post fall middleware", async () => { 
+    const tokenSecret = process.env.TOKEN_SECRET;
+    delete process.env.TOKEN_SECRET;
+    const response4 = await request(app)
+    .post("/posts")
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({
+      title: "test title",
+      content: "test content",
+      owner: testUser._id,
+    });
+  expect(response4.statusCode).toBe(500);
+  process.env.TOKEN_SECRET = tokenSecret;
+
   });
 });

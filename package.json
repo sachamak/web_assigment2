@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "tsc && jest --detectOpenHandles --forceExit --RunInBand",
+    "test": "tsc && jest --detectOpenHandles --forceExit --RunInBand --coverage",
     "testAuth": "tsc && jest --detectOpenHandles --forceExit --coverage auth.test.ts",
     "testPost": "tsc && jest --detectOpenHandles --forceExit --coverage post.test.ts",
     "testComments": "tsc && jest --detectOpenHandles --forceExit --coverage comments.test.ts",
@@ -16,7 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "babel": "^5.8.38",
+    "babel": "^6.23.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
@@ -46,5 +46,4 @@
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.19.1"
   }
- 
 }
