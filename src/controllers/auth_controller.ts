@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import userModel from '../models/user_model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import mongoose from "mongoose";
   
 type Payload = {
   _id: string;
@@ -179,4 +180,30 @@ const login = async (req: Request, res: Response) => {
 
   };
 
-export default { register, login,logout,refresh };
+  const updateUser = async (req: Request, res: Response) => {
+    try {
+      const userId = new mongoose.Types.ObjectId(req.params.id);
+      const user = await userModel.findByIdAndUpdate(userId, req.body, { new: true });
+      if (!user) {
+        res.status(404).send("User not found");
+        return;
+      }
+      res.status(200).send(user);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  };
+  
+  const deleteUser = async (req: Request, res: Response) => {
+    try {
+      const userId = new mongoose.Types.ObjectId(req.params.id);
+      const user = await userModel.findByIdAndDelete(userId);
+      if(user){
+      res.status(200).send("User deleted");
+      }
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  };
+
+export default { register, login,logout,refresh,updateUser,deleteUser};
